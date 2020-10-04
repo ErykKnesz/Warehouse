@@ -51,7 +51,8 @@ def get_costs():
 
 
 def get_income():
-    return
+    revenue = [a_dict.get('quantity') * a_dict.get('unit_price') for a_dict in sold_items]
+    return sum(revenue)
 
 def menu():
     # prompts user to state desired action and proceeds accordingly
@@ -73,7 +74,9 @@ def menu():
         get_items()
         print(f"Here's what you sold already! \n {sold_items}")
     if user.lower() == 'cost':
-        print(get_costs())
+        print(f"your total cost equal: {get_costs()}")
+    if user.lower() == 'revenue':
+        print(f"your total revenue equals: {get_income()}")
         
 
 
