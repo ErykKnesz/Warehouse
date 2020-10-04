@@ -39,13 +39,17 @@ def sell_item(name_to_sell, quantity_to_sell):
                 {
                     'name': name_to_sell,
                     'quantity': quantity_to_sell,
-                    'unit': 'bottle', 
-                    'unit_price': 1
+                    'unit': dictionary['unit'], 
+                    'unit_price': dictionary['unit_price']
                 }
                 )
 
+
+def get_costs():
+     return
+
 def menu():
-    # prompts user to input desired action and proceeds accordingly
+    # prompts user to state desired action and proceeds accordingly
     user = input("What would you like to do? ")
     if user.lower() == 'exit':
             print("Exitting...bye!")
