@@ -4,6 +4,8 @@ items = [
     {'name': 'beer', 'quantity': 10, 'unit': 'barrel', 'unit_price': 15}
     ]
 
+sold_items = []
+
 
 def user_inputs():
     prompt = input("What would you like to do? ")
@@ -21,6 +23,7 @@ def get_items():
 
     return None
 
+
 def add_item():
     dictionary = {
         'name': input("Please provide product name: "),
@@ -30,6 +33,21 @@ def add_item():
         }
     return dictionary
 
+
+def sell_item(name_to_sell, quantity_to_sell):
+    for dictionary in items:
+        stock_name = dictionary.get('name')
+        if name_to_sell == stock_name.lower():   
+            stock_quantity = dictionary.get('quantity')
+            dictionary['quantity'] = stock_quantity - quantity_to_sell
+            sold_items.append(
+                {
+                    'name': name_to_sell,
+                    'quantity': quantity_to_sell,
+                    'unit': 'bottle', 
+                    'unit_price': 1
+                }
+                )
 
 
 if __name__ == "__main__":
@@ -42,7 +60,12 @@ if __name__ == "__main__":
             get_items()
         if user.lower() == 'add':
             items.append(add_item())
-
-#for item in dictionary:
-#print(f"{item:>30}", end = '\n')
-#print(get_items())
+            print("Congrats! New item added. See the new stock-status")
+            get_items()
+        if user.lower() == 'sell':
+            name_to_sell = input("Which product to sell?").lower()
+            quantity_to_sell = int(input("How much to sell?"))
+            sell_item(name_to_sell, quantity_to_sell)
+            print("Sell action completed! See the new stock-status!")
+            get_items()
+            print(f"Here's what you sold already! \n {sold_items}")
