@@ -1,4 +1,5 @@
 import csv
+import sys
 
 items = [
     {
@@ -25,12 +26,12 @@ sold_items = []
 
 
 def get_items():
-    headings = f"{'Name':<20}{'Quantity':<20}{'Unit':<20}\
-        {'Unit Price (PLN)':<20}"
+    headings = "{}\t\t\t {}\t\t\t{}\t\t\t\
+        {}".format('Name', 'Quantity', 'Unit', 'Unit Price (PLN)')
     print(headings)
     for a_dict in items:
         for value in a_dict.values():
-            print(value, end=f"{'':<20}")
+            print(value, end='\t\t\t')
         print('', end='\n')
 
     return None
@@ -103,10 +104,16 @@ def export_sales_to_csv():
 
 def load_items_from_csv():
     items.clear()
-    with open('warehouse.csv', 'r') as csvfile:
+    with open('warehouse.csv') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             items.append(row)
+    for a_dict in items:
+        for key, value in a_dict.items():
+            try:  
+                a_dict[key] = float(value)
+            except ValueError:
+                a_dict[key] = str(value)
 
 
 def menu():
@@ -146,5 +153,6 @@ def menu():
 
 
 if __name__ == "__main__":
+    load_items_from_csv()
     while True:
         menu()
