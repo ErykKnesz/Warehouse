@@ -11,9 +11,9 @@ def get_items():
     headings = f"{'Name':<20}{'Quantity':<20}{'Unit':<20}\
         {'Unit Price (PLN)':<20}"
     print(headings)
-    for i in items:
-        for j in i.values():
-            print(j, end=f"{'':<20}")
+    for a_dict in items:
+        for value in a_dict.values():
+            print(value, end=f"{'':<20}")
         print('', end='\n')
 
     return None
@@ -46,7 +46,12 @@ def sell_item(name_to_sell, quantity_to_sell):
 
 
 def get_costs():
-     return
+    costs = [a_dict.get('quantity') * a_dict.get('unit_price') for a_dict in items]
+    return sum(costs)
+
+
+def get_income():
+    return
 
 def menu():
     # prompts user to state desired action and proceeds accordingly
@@ -67,6 +72,9 @@ def menu():
         print("Sell action completed! See the new stock-status!")
         get_items()
         print(f"Here's what you sold already! \n {sold_items}")
+    if user.lower() == 'cost':
+        print(get_costs())
+        
 
 
 if __name__ == "__main__":
