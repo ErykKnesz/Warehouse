@@ -1,7 +1,10 @@
 items = [
-    {'name': 'Coca-Cola', 'quantity': 20, 'unit': 'bottle', 'unit_price': 2.3},
-    {'name': 'water', 'quantity': 50, 'unit': 'bottle', 'unit_price': 1.1},
-    {'name': 'beer', 'quantity': 10, 'unit': 'barrel', 'unit_price': 15}
+    {'name': 'Coca-Cola', 'quantity': 20,
+        'unit': 'bottle', 'unit_price': 2.32},
+    {'name': 'water', 'quantity': 50,
+        'unit': 'bottle', 'unit_price': 1.15},
+    {'name': 'beer', 'quantity': 10,
+        'unit': 'barrel', 'unit_price': 15}
     ]
 
 sold_items = []
@@ -32,42 +35,48 @@ def add_item():
 def sell_item(name_to_sell, quantity_to_sell):
     for dictionary in items:
         stock_name = dictionary.get('name')
-        if name_to_sell == stock_name.lower():   
+        if name_to_sell == stock_name.lower():
             stock_quantity = dictionary.get('quantity')
             dictionary['quantity'] = stock_quantity - quantity_to_sell
             sold_items.append(
                 {
                     'name': name_to_sell,
                     'quantity': quantity_to_sell,
-                    'unit': dictionary['unit'], 
+                    'unit': dictionary['unit'],
                     'unit_price': dictionary['unit_price']
                 }
                 )
 
 
 def get_costs():
-    costs = [a_dict.get('quantity') * a_dict.get('unit_price') for a_dict in items]
-    return round(sum(costs),2)
+    costs = [
+        a_dict.get('quantity') * a_dict.get('unit_price')
+        for a_dict in items
+        ]
+    return sum(costs)
 
 
 def get_income():
-    revenue = [a_dict.get('quantity') * a_dict.get('unit_price') for a_dict in sold_items]
-    return round(sum(revenue),2)
+    revenue = [
+        a_dict.get('quantity') * a_dict.get('unit_price')
+        for a_dict in sold_items
+        ]
+    return sum(revenue)
 
 
 def get_profit():
     costs = get_costs()
     revenue = get_income()
     profit = revenue - costs
-    return profit
+    return round(profit, 2)
 
 
 def menu():
     # prompts user to state desired action and proceeds accordingly
     user = input("What would you like to do? ")
     if user.lower() == 'exit':
-            print("Exitting...bye!")
-            exit()
+        print("Exitting...bye!")
+        exit()
     if user.lower() == 'show':
         get_items()
     if user.lower() == 'add':
@@ -87,7 +96,6 @@ def menu():
         print(f"your total revenue equals: {get_income()}")
     if user.lower() == 'show profit':
         print(f"your net result equals: {get_profit()}")
-        
 
 
 if __name__ == "__main__":
