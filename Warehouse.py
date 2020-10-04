@@ -102,9 +102,9 @@ def export_sales_to_csv():
         writer.writerows(sold_items)
 
 
-def load_items_from_csv():
+def load_items_from_csv(path):
     items.clear()
-    with open('warehouse.csv') as csvfile:
+    with open(path) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             items.append(row)
@@ -147,12 +147,14 @@ def menu():
         export_sales_to_csv()
     if user.lower() == 'load':
         print("Succesfully loaded data from .csv extension")
-        load_items_from_csv()
+        load_items_from_csv('warehouse.csv')
         print("See updated stock status")
         get_items()
 
 
 if __name__ == "__main__":
-    load_items_from_csv()
+    if len(sys.argv[:]) > 1:
+        path = sys.argv[1]
+        load_items_from_csv(path)
     while True:
         menu()
