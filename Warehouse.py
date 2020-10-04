@@ -101,6 +101,14 @@ def export_sales_to_csv():
         writer.writerows(sold_items)
 
 
+def load_items_from_csv():
+    items.clear()
+    with open('warehouse.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            items.append(row)
+
+
 def menu():
     # prompts user to state desired action and proceeds accordingly
     user = input("What would you like to do? ")
@@ -130,6 +138,11 @@ def menu():
         print("Succesfully exported data to .csv extension")
         export_items_to_csv()
         export_sales_to_csv()
+    if user.lower() == 'load':
+        print("Succesfully loaded data from .csv extension")
+        load_items_from_csv()
+        print("See updated stock status")
+        get_items()
 
 
 if __name__ == "__main__":
