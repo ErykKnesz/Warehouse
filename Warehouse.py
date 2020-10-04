@@ -1,6 +1,6 @@
 items = [
-    {'name': 'Coca-Cola', 'quantity': 20, 'unit': 'bottle', 'unit_price': 2},
-    {'name': 'water', 'quantity': 50, 'unit': 'bottle', 'unit_price': 1},
+    {'name': 'Coca-Cola', 'quantity': 20, 'unit': 'bottle', 'unit_price': 2.3},
+    {'name': 'water', 'quantity': 50, 'unit': 'bottle', 'unit_price': 1.1},
     {'name': 'beer', 'quantity': 10, 'unit': 'barrel', 'unit_price': 15}
     ]
 
@@ -47,12 +47,20 @@ def sell_item(name_to_sell, quantity_to_sell):
 
 def get_costs():
     costs = [a_dict.get('quantity') * a_dict.get('unit_price') for a_dict in items]
-    return sum(costs)
+    return round(sum(costs),2)
 
 
 def get_income():
     revenue = [a_dict.get('quantity') * a_dict.get('unit_price') for a_dict in sold_items]
-    return sum(revenue)
+    return round(sum(revenue),2)
+
+
+def get_profit():
+    costs = get_costs()
+    revenue = get_income()
+    profit = revenue - costs
+    return profit
+
 
 def menu():
     # prompts user to state desired action and proceeds accordingly
@@ -68,15 +76,17 @@ def menu():
         get_items()
     if user.lower() == 'sell':
         name_to_sell = input("Which product to sell?").lower()
-        quantity_to_sell = int(input("How much to sell?"))
+        quantity_to_sell = float(input("How much to sell?"))
         sell_item(name_to_sell, quantity_to_sell)
         print("Sell action completed! See the new stock-status!")
         get_items()
         print(f"Here's what you sold already! \n {sold_items}")
-    if user.lower() == 'cost':
+    if user.lower() == 'show cost':
         print(f"your total cost equal: {get_costs()}")
-    if user.lower() == 'revenue':
+    if user.lower() == 'show revenue':
         print(f"your total revenue equals: {get_income()}")
+    if user.lower() == 'show profit':
+        print(f"your net result equals: {get_profit()}")
         
 
 
