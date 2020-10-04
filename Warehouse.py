@@ -1,10 +1,24 @@
+import csv
+
 items = [
-    {'name': 'Coca-Cola', 'quantity': 20,
-        'unit': 'bottle', 'unit_price': 2.32},
-    {'name': 'water', 'quantity': 50,
-        'unit': 'bottle', 'unit_price': 1.15},
-    {'name': 'beer', 'quantity': 10,
-        'unit': 'barrel', 'unit_price': 15}
+    {
+    'name': 'Coca-Cola', 
+    'quantity': 20,
+    'unit': 'bottle', 
+    'unit_price': 2.32
+    },
+    {
+    'name': 'water',
+    'quantity': 50,
+    'unit': 'bottle',
+    'unit_price': 1.15
+    },
+    {
+    'name': 'beer',
+    'quantity': 10,
+    'unit': 'barrel',
+    'unit_price': 15
+    }
     ]
 
 sold_items = []
@@ -71,6 +85,22 @@ def get_profit():
     return round(profit, 2)
 
 
+def export_items_to_csv():
+    field_names = ['name', 'quantity', 'unit', 'unit_price']
+    with open('warehouse.csv', 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)
+        writer.writeheader()
+        writer.writerows(items)
+
+
+def export_sales_to_csv():
+    field_names = ['name', 'quantity', 'unit', 'unit_price']
+    with open('sold_items.csv', 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)
+        writer.writeheader()
+        writer.writerows(sold_items)
+
+
 def menu():
     # prompts user to state desired action and proceeds accordingly
     user = input("What would you like to do? ")
@@ -96,9 +126,12 @@ def menu():
         print(f"your total revenue equals: {get_income()}")
     if user.lower() == 'show profit':
         print(f"your net result equals: {get_profit()}")
+    if user.lower() == 'save':
+        print("Succesfully exported data to .csv extension")
+        export_items_to_csv()
+        export_sales_to_csv()
 
 
 if __name__ == "__main__":
     while True:
         menu()
-        
