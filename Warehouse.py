@@ -7,11 +7,6 @@ items = [
 sold_items = []
 
 
-def user_inputs():
-    prompt = input("What would you like to do? ")
-    return prompt
-
-
 def get_items():
     headings = f"{'Name':<20}{'Quantity':<20}{'Unit':<20}\
         {'Unit Price (PLN)':<20}"
@@ -49,23 +44,28 @@ def sell_item(name_to_sell, quantity_to_sell):
                 }
                 )
 
+def menu():
+    # prompts user to input desired action and proceeds accordingly
+    user = input("What would you like to do? ")
+    if user.lower() == 'exit':
+            print("Exitting...bye!")
+            exit()
+    if user.lower() == 'show':
+        get_items()
+    if user.lower() == 'add':
+        items.append(add_item())
+        print("Congrats! New item added. See the new stock-status")
+        get_items()
+    if user.lower() == 'sell':
+        name_to_sell = input("Which product to sell?").lower()
+        quantity_to_sell = int(input("How much to sell?"))
+        sell_item(name_to_sell, quantity_to_sell)
+        print("Sell action completed! See the new stock-status!")
+        get_items()
+        print(f"Here's what you sold already! \n {sold_items}")
+
 
 if __name__ == "__main__":
     while True:
-        user = user_inputs()
-        if user.lower() == 'exit':
-            print("Exitting...bye!")
-            exit()
-        if user.lower() == 'show':
-            get_items()
-        if user.lower() == 'add':
-            items.append(add_item())
-            print("Congrats! New item added. See the new stock-status")
-            get_items()
-        if user.lower() == 'sell':
-            name_to_sell = input("Which product to sell?").lower()
-            quantity_to_sell = int(input("How much to sell?"))
-            sell_item(name_to_sell, quantity_to_sell)
-            print("Sell action completed! See the new stock-status!")
-            get_items()
-            print(f"Here's what you sold already! \n {sold_items}")
+        menu()
+        
