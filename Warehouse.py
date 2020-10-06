@@ -1,5 +1,6 @@
 import csv
 import sys
+import tabulate
 
 items = [
     {
@@ -26,13 +27,9 @@ sold_items = []
 
 
 def get_items():
-    headings = "{}\t\t\t {}\t\t\t{}\t\t\t\
-        {}".format('Name', 'Quantity', 'Unit', 'Unit Price (PLN)')
-    print(headings)
-    for a_dict in items:
-        for value in a_dict.values():
-            print(value, end='\t\t\t')
-        print('', end='\n')
+    headings = items[0].keys()
+    rows = [a_dict.values() for a_dict in items]
+    print(tabulate.tabulate(rows, headings))
 
     return None
 
@@ -40,9 +37,9 @@ def get_items():
 def add_item():
     dictionary = {
         'name': input("Please provide product name: "),
-        'quantity': input("Please provide product quantity: "),
+        'quantity': float(input("Please provide product quantity: ")),
         'unit': input("Please provide unit name: "),
-        'unit_price': input("Please provide unit price: ")
+        'unit_price': float(input("Please provide unit price: "))
         }
     return dictionary
 
@@ -118,34 +115,34 @@ def load_items_from_csv(path):
 
 def menu():
     # prompts user to state desired action and proceeds accordingly
-    user = input("What would you like to do? ")
-    if user.lower() == 'exit':
+    user = input("What would you like to do? ").lower()
+    if user == 'exit':
         print("Exitting...bye!")
         exit()
-    if user.lower() == 'show':
+    if user == 'show':
         get_items()
-    if user.lower() == 'add':
+    if user == 'add':
         items.append(add_item())
         print("Congrats! New item added. See the new stock-status")
         get_items()
-    if user.lower() == 'sell':
+    if user == 'sell':
         name_to_sell = input("Which product to sell?").lower()
         quantity_to_sell = float(input("How much to sell?"))
         sell_item(name_to_sell, quantity_to_sell)
         print("Sell action completed! See the new stock-status!")
         get_items()
         print(f"Here's what you sold already! \n {sold_items}")
-    if user.lower() == 'show cost':
+    if user == 'show cost':
         print(f"your total cost equal: {get_costs()}")
-    if user.lower() == 'show revenue':
+    if user == 'show revenue':
         print(f"your total revenue equals: {get_income()}")
-    if user.lower() == 'show profit':
+    if user == 'show profit':
         print(f"your net result equals: {get_profit()}")
-    if user.lower() == 'save':
+    if user == 'save':
         print("Succesfully exported data to .csv extension")
         export_items_to_csv()
         export_sales_to_csv()
-    if user.lower() == 'load':
+    if user == 'load':
         print("Succesfully loaded data from .csv extension")
         load_items_from_csv('warehouse.csv')
         print("See updated stock status")
