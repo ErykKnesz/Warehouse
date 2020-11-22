@@ -23,7 +23,7 @@
             <td>{{ item.unit }}</td>
             <td>{{ "{:.2f}".format(item.unit_price) }}</td>
             <td>
-              <form method="POST">
+              <form method="GET" action="/sell/{{ item.name }}">
                 <input type="submit" value="Sell Product">
               </form>
             </td>
