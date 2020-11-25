@@ -1,4 +1,5 @@
 from decimal import *
+import csv
 
 
 class Product:
@@ -25,12 +26,30 @@ class Product:
         return 
 
     def sell_item(form, product_to_sell):
-        form.pop('csrf_token')
         if product_to_sell in ITEMS.keys():
             product_to_sell = ITEMS.get(product_to_sell)
             new_quantity = Decimal(product_to_sell.quantity) - form['quantity']
+            if new_quantity < 0:
+                new_quantity = 0
             product_to_sell.quantity = new_quantity
         return new_quantity
+
+    def save_csv(ITEMS):
+        with open("warehouse.csv", "w", newline='') as f:
+            field_names = ['name', 'unit', 'unit_price', 'quantity']
+            products = [product for product in ITEMS.values()]
+            writer = csv.DictWriter(f, fieldnames=field_names)
+            writer.writeheader()
+            for product in products:
+                writer.writerow({'name': product.name, 'unit': product.unit, 'unit_price': product.unit_price, 'quantity': product.quantity})
+
+    def import_csv():
+        with open("warehouse.csv", "r", newline='') as f:
+            ITEMS.clear()
+            reader = csv.DictReader(f)
+            for row in reader:
+                ITEMS[row['name']] = Product(name=row['name'], unit=row['unit'], unit_price=Decimal(row['unit_price']), quantity=Decimal(row['quantity']))
+        return ITEMS
 
 
 item_1 = Product(name='apple juice', unit='l', unit_price=1.99, quantity=45.03)
