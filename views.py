@@ -24,7 +24,7 @@ def products_list(items=ITEMS):
         else:
             error = form.errors
             for field, problem in error.items():
-                flash(f"{field}: {problem[0]}")
+                flash(f"{field}: {problem[0]}", 'danger')
     return render_template("product_list.html",
                            headings=headings,
                            items=items,
@@ -37,12 +37,13 @@ def sell_product(product_name):
     item = ITEMS[product_name]
     if request.method == 'POST':
         if form.validate_on_submit():
-            quantity = form.data
-            quantity.pop('csrf_token')
-            Product.sell_item(quantity, product_to_sell=product_name)
-            flash("Please enter a valid email address", 'error')
-            flash (f"Sold {quantity['quantity']} of {product_name}") 
-
+            form_quantity = form.data
+            form_quantity.pop('csrf_token')
+            quantity = Product.sell_item(form_quantity, product_to_sell=product_name)
+            if quantity == 0:
+                flash (f"Sold out all of {product_name}", 'success')
+            else:
+                flash (f"Sold {form_quantity['quantity']} of {product_name}", 'success') 
             return redirect(url_for("products_list"))
     return render_template("sell_product.html",
                            form=form, 

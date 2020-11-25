@@ -13,5 +13,3 @@ class ProductForm(FlaskForm):
 class ProductSaleForm(FlaskForm):
     quantity = DecimalField('Quantity', validators=[InputRequired()])
     
-
-   

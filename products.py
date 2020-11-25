@@ -6,8 +6,8 @@ class Product:
     def __init__(self, name, unit, unit_price, quantity):
         self.name = name
         self.unit = unit
-        self.unit_price = unit_price
-        self.quantity = quantity
+        self.unit_price = Decimal(unit_price)
+        self.quantity = Decimal(quantity)
 
     def __str__(self):
         return f"{self.name} {self.unit} {self.unit_price} {self.quantity}"
@@ -20,15 +20,16 @@ class Product:
                                   quantity=item['quantity'])
             ITEMS[new_product.name] = new_product
         else:
-             ITEMS[item['name']] = Product(name=item['name'], unit=item['unit'],
+            new_quantity = item['quantity'] + ITEMS[item['name']].quantity
+            ITEMS[item['name']] = Product(name=item['name'], unit=item['unit'],
                                            unit_price=item['unit_price'],
-                                           quantity=item['quantity'])
-        return 
+                                           quantity=new_quantity)
+        return
 
     def sell_item(form, product_to_sell):
         if product_to_sell in ITEMS.keys():
             product_to_sell = ITEMS.get(product_to_sell)
-            new_quantity = Decimal(product_to_sell.quantity) - form['quantity']
+            new_quantity = product_to_sell.quantity - form['quantity']
             if new_quantity < 0:
                 new_quantity = 0
             product_to_sell.quantity = new_quantity
@@ -48,7 +49,7 @@ class Product:
             ITEMS.clear()
             reader = csv.DictReader(f)
             for row in reader:
-                ITEMS[row['name']] = Product(name=row['name'], unit=row['unit'], unit_price=Decimal(row['unit_price']), quantity=Decimal(row['quantity']))
+                ITEMS[row['name']] = Product(name=row['name'], unit=row['unit'], unit_price=row['unit_price'], quantity=row['quantity'])
         return ITEMS
 
 
