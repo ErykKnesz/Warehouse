@@ -117,7 +117,7 @@ def menu():
     # prompts user to state desired action and proceeds accordingly
     user = input("What would you like to do? ").lower()
     if user == 'exit':
-        print("Exitting...bye!")
+        print("Exitting...bye!") 
         exit()
     if user == 'show':
         get_items()

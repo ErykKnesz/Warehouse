@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from products import Product, ITEMS
+from products import Product, warehouse
 from forms import ProductForm, ProductSaleForm
 
 
@@ -14,12 +14,13 @@ def homepage():
 
 
 @app.route('/products', methods=['GET', 'POST'])
-def products_list(items=ITEMS):
+def products_list():
     form = ProductForm()
-    items = items.values()
+    items = warehouse.show_stock()
     if request.method == 'POST':
         if form.validate_on_submit():
-            Product.add_item(form.data)
+            form.data.pop('csrf_token')
+            warehouse.add_item(form.data)
             return redirect(url_for("products_list"))
         else:
             error = form.errors
@@ -34,16 +35,22 @@ def products_list(items=ITEMS):
 @app.route('/sell/<product_name>', methods=['GET', 'POST'])
 def sell_product(product_name):
     form = ProductSaleForm()
-    item = ITEMS[product_name]
+    item = warehouse.products[product_name]
     if request.method == 'POST':
         if form.validate_on_submit():
             form_quantity = form.data
             form_quantity.pop('csrf_token')
-            quantity = Product.sell_item(form_quantity, product_to_sell=product_name)
+            quantity = warehouse.sell_item(
+                form_quantity,
+                product_to_sell=product_name
+            )
             if quantity == 0:
                 flash (f"Sold out all of {product_name}", 'success')
             else:
-                flash (f"Sold {form_quantity['quantity']} of {product_name}", 'success') 
+                flash (
+                    f"Sold {form_quantity['quantity']} of {product_name}",
+                    'success'
+                ) 
             return redirect(url_for("products_list"))
     return render_template("sell_product.html",
                            form=form, 
@@ -53,15 +60,34 @@ def sell_product(product_name):
 
 @app.route('/save', methods=['POST'])
 def save_csv():
-    Product.save_csv(ITEMS)
-    return redirect(url_for("products_list"))
+    if 'revenue' in request.headers['Referer']:
+        warehouse.save_csv(sold=True)
+        return redirect(url_for("revenue"))
+    else:
+        warehouse.save_csv(warehouse.products)
+        return redirect(url_for("products_list"))
 
 
 @app.route('/load', methods=['POST'])
 def import_csv():
-    return products_list(items=Product.import_csv())
+    if 'revenue' in request.headers['Referer']:
+        warehouse.import_csv(sold=True)
+        return redirect(url_for("revenue"))
+    else:
+        warehouse.import_csv()
+        return redirect(url_for("products_list"))
+
+
+@app.route('/revenue')
+def revenue():
+    items = warehouse.sold_items.values()
+    revenue = warehouse.get_income()
+    return render_template(
+        'revenue.html',
+        items=items,
+        headings=headings,
+        revenue=revenue)
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-    #FLASK_ENV=development
