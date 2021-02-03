@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from products import Product, warehouse
+from flask import (Flask, render_template, request, redirect, url_for, flash,
+                   make_response)
+from products import warehouse, dashboard
 from forms import ProductForm, ProductSaleForm
-
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "nininini"
@@ -10,7 +13,15 @@ headings = ['#', 'Name', 'Quantity', 'Unit', 'Unit Price']
 
 @app.route('/')
 def homepage():
-    return render_template("main.html")
+    dashboard.create_graph()
+    plot_url = 'static/dashboard.png'
+    plt.savefig(plot_url)
+    response = make_response(render_template("main.html"))
+    if ('Cache-Control' not in response.headers):
+        response.headers['Cache-Control'] = 'no-cache, no-store, \
+        must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+    return response
 
 
 @app.route('/products', methods=['GET', 'POST'])

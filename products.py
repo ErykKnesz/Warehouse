@@ -1,6 +1,7 @@
-from decimal import *
+from decimal import Decimal
 import csv
 import copy
+import matplotlib.pyplot as plt
 
 
 class Product:
@@ -14,8 +15,10 @@ class Product:
         return f"{self.name} {self.unit} {self.unit_price} {self.quantity}"
 
 
-item_1 = Product(name='apple juice', unit='l', unit_price=1.99, quantity=45.03)
-item_2 = Product(name='cake flour', unit='kg', unit_price=1.23, quantity=644.09)
+item_1 = Product(
+    name='apple juice', unit='l', unit_price=1.99, quantity=45.03)
+item_2 = Product(
+    name='cake flour', unit='kg', unit_price=1.23, quantity=644.09)
 
 
 class Warehouse:
@@ -37,7 +40,8 @@ class Warehouse:
             )
             self.products[new_product.name] = new_product
         else:
-            new_quantity = item['quantity'] + self.products[item['name']].quantity
+            new_quantity = (item['quantity'] +
+                            self.products[item['name']].quantity)
             self.products[item['name']] = Product(
                 name=item['name'], unit=item['unit'],
                 unit_price=item['unit_price'], quantity=new_quantity
@@ -90,7 +94,14 @@ class Warehouse:
             writer = csv.DictWriter(f, fieldnames=field_names)
             writer.writeheader()
             for product in products:
-                writer.writerow({'name': product.name, 'unit': product.unit, 'unit_price': product.unit_price, 'quantity': product.quantity})
+                writer.writerow(
+                    {
+                        'name': product.name,
+                        'unit': product.unit,
+                        'unit_price': product.unit_price,
+                        'quantity': product.quantity
+                    }
+                )
 
     def import_csv(self, sold=False):
         if not sold:
@@ -101,11 +112,34 @@ class Warehouse:
             filename = "sold items.csv"
             self.sold_items.clear()
             items = self.sold_items
-        with open(f"{filename}", "r", newline='') as f:    
+        with open(f"{filename}", "r", newline='') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                items[row['name']] = Product(name=row['name'], unit=row['unit'], unit_price=row['unit_price'], quantity=row['quantity'])
+                items[row['name']] = Product(
+                    name=row['name'],
+                    unit=row['unit'],
+                    unit_price=row['unit_price'],
+                    quantity=row['quantity']
+                )
         return items
+
+
+class Dashboard(Warehouse):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def create_graph(self):
+        self.bar_stock = sum(map(
+                lambda item: item.quantity,
+                self.products.values()
+        ))
+        self.bar_sold = sum(map(
+                lambda item: item.quantity,
+                self.sold_items.values()
+        ))
+        bars = [self.bar_stock, self.bar_sold]
+        names = ['in stock', 'sold']
+        return plt.bar(names, bars)
 
 
 ITEMS = {
@@ -115,3 +149,4 @@ ITEMS = {
 SOLD_ITEMS = {}
 
 warehouse = Warehouse(ITEMS, SOLD_ITEMS)
+dashboard = Dashboard(warehouse.products, warehouse.sold_items)

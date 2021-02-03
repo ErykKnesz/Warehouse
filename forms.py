@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DecimalField
+from wtforms import StringField, DecimalField
 from wtforms.validators import DataRequired, InputRequired
 
 
@@ -12,4 +12,3 @@ class ProductForm(FlaskForm):
 
 class ProductSaleForm(FlaskForm):
     quantity = DecimalField('Quantity', validators=[InputRequired()])
-    
